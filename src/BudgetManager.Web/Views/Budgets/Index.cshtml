@@ -1,0 +1,148 @@
+@model BudgetPacingViewModel
+@{
+    ViewData["Title"] = "Budgets";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="bi bi-pie-chart me-2"></i>Budgets - @Model.MonthName</h1>
+    <div class="d-flex gap-2">
+        <div class="btn-group">
+            <a asp-action="Index" asp-route-year="@(Model.Month == 1 ? Model.Year - 1 : Model.Year)" 
+               asp-route-month="@(Model.Month == 1 ? 12 : Model.Month - 1)" 
+               class="btn btn-outline-secondary">
+                <i class="bi bi-chevron-left"></i>
+            </a>
+            <a asp-action="Index" asp-route-year="@DateTime.Now.Year" asp-route-month="@DateTime.Now.Month" 
+               class="btn btn-outline-secondary">Today</a>
+            <a asp-action="Index" asp-route-year="@(Model.Month == 12 ? Model.Year + 1 : Model.Year)" 
+               asp-route-month="@(Model.Month == 12 ? 1 : Model.Month + 1)" 
+               class="btn btn-outline-secondary">
+                <i class="bi bi-chevron-right"></i>
+            </a>
+        </div>
+        <a asp-action="Edit" asp-route-year="@Model.Year" asp-route-month="@Model.Month" class="btn btn-primary">
+            <i class="bi bi-pencil me-2"></i>Edit Budgets
+        </a>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-muted">Total Budget</h6>
+                <h3 class="card-title mb-0">@Model.TotalBudget.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-muted">Total Spent</h6>
+                <h3 class="card-title mb-0 text-danger">@Model.TotalSpent.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-muted">Remaining</h6>
+                <h3 class="card-title mb-0 @(Model.TotalRemaining >= 0 ? "text-success" : "text-danger")">
+                    @Model.TotalRemaining.ToString("C")
+                </h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-@(Model.OverallStatus == BudgetStatus.OK ? "success" : Model.OverallStatus == BudgetStatus.WATCH ? "warning" : "danger") text-white">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2">Safe to Spend Today</h6>
+                <h3 class="card-title mb-0">@Model.SafeToSpendToday.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Overall Progress -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between mb-2">
+            <span>Month Progress: Day @Model.CurrentDay of @Model.DaysInMonth (@Model.PercentOfMonthElapsed.ToString("N0")%)</span>
+            <span>Budget Usage: @Model.PercentSpent.ToString("N1")%</span>
+        </div>
+        <div class="progress" style="height: 30px;">
+            <div class="progress-bar bg-secondary" style="width: @Model.PercentOfMonthElapsed%;" title="Month Progress">
+                <span class="small">Time: @Model.PercentOfMonthElapsed.ToString("N0")%</span>
+            </div>
+        </div>
+        <div class="progress mt-2" style="height: 30px;">
+            <div class="progress-bar bg-@(Model.OverallStatus == BudgetStatus.OK ? "success" : Model.OverallStatus == BudgetStatus.WATCH ? "warning" : "danger")" 
+                 style="width: @Math.Min(Model.PercentSpent, 100)%;" title="Budget Usage">
+                <span class="small">Spent: @Model.PercentSpent.ToString("N0")%</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Category Budgets -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Category Budgets</h5>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Category</th>
+                    <th class="text-end">Budget</th>
+                    <th class="text-end">Spent</th>
+                    <th class="text-end">Remaining</th>
+                    <th style="width: 200px;">Progress</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-end">Safe/Day</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var category in Model.CategorySummaries.OrderByDescending(c => c.SpentAmount))
+                {
+                    @if (category.BudgetAmount > 0 || category.SpentAmount > 0)
+                    {
+                        <tr>
+                            <td class="fw-bold">@category.CategoryName</td>
+                            <td class="text-end">@category.BudgetAmount.ToString("C")</td>
+                            <td class="text-end text-danger">@category.SpentAmount.ToString("C")</td>
+                            <td class="text-end @(category.Remaining >= 0 ? "text-success" : "text-danger")">
+                                @category.Remaining.ToString("C")
+                            </td>
+                            <td>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar bg-@category.StatusClass" 
+                                         style="width: @(category.BudgetAmount > 0 ? Math.Min(category.PercentUsed, 100) : 100)%">
+                                        @if (category.BudgetAmount > 0)
+                                        {
+                                            <span class="small">@category.PercentUsed.ToString("N0")%</span>
+                                        }
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-@category.StatusClass">@category.StatusText</span>
+                            </td>
+                            <td class="text-end">
+                                @if (category.SafeToSpendToday > 0)
+                                {
+                                    @category.SafeToSpendToday.ToString("C")
+                                }
+                                else
+                                {
+                                    <span class="text-danger">$0.00</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

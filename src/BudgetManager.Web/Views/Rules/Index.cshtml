@@ -1,0 +1,82 @@
+@model RuleListViewModel
+@{
+    ViewData["Title"] = "Categorization Rules";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="bi bi-diagram-3 me-2"></i>Categorization Rules</h1>
+    <div>
+        <form asp-action="ApplyRules" method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-success me-2">
+                <i class="bi bi-magic me-2"></i>Apply Rules to Uncategorized
+            </button>
+        </form>
+        <a asp-action="Index" asp-route-showInactive="@(!Model.ShowInactive)" class="btn btn-outline-secondary me-2">
+            @(Model.ShowInactive ? "Hide Inactive" : "Show Inactive")
+        </a>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2"></i>Add Rule
+        </a>
+    </div>
+</div>
+
+<div class="alert alert-info">
+    <i class="bi bi-info-circle me-2"></i>
+    Rules are applied in order of priority (lowest number first). 
+    When importing transactions, the first matching rule determines the category.
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 80px;">Priority</th>
+                    <th>Contains Text</th>
+                    <th>Category</th>
+                    <th class="text-center">Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var rule in Model.Rules)
+                {
+                    <tr class="@(!rule.IsActive ? "table-secondary" : "")">
+                        <td>
+                            <span class="badge bg-primary">@rule.Priority</span>
+                        </td>
+                        <td>
+                            <code>@rule.ContainsText</code>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">@rule.CategoryName</span>
+                        </td>
+                        <td class="text-center">
+                            @if (rule.IsActive)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Inactive</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <a asp-action="Edit" asp-route-id="@rule.Id" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form asp-action="Delete" asp-route-id="@rule.Id" method="post" class="d-inline"
+                                  onsubmit="return confirm('Delete this rule?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

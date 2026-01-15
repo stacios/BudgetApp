@@ -1,0 +1,97 @@
+@model ImportUploadViewModel
+@{
+    ViewData["Title"] = "Import Transactions";
+}
+
+<h1 class="h3 mb-4"><i class="bi bi-upload me-2"></i>Import Transactions</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Upload CSV File</h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="Preview" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="AccountId" class="form-label"></label>
+                        <select asp-for="AccountId" class="form-select" asp-items="Model.Accounts">
+                            <option value="">Select Account</option>
+                        </select>
+                        <span asp-validation-for="AccountId" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="CsvFile" class="form-label"></label>
+                        <input asp-for="CsvFile" class="form-control" type="file" accept=".csv" />
+                        <span asp-validation-for="CsvFile" class="text-danger"></span>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-eye me-2"></i>Preview
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">CSV Format</h5>
+            </div>
+            <div class="card-body">
+                <p>Your CSV file should have the following columns:</p>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Required</th>
+                            <th>Format</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>Date</code></td>
+                            <td><span class="badge bg-danger">Yes</span></td>
+                            <td>MM/DD/YYYY or YYYY-MM-DD</td>
+                        </tr>
+                        <tr>
+                            <td><code>Description</code></td>
+                            <td><span class="badge bg-danger">Yes</span></td>
+                            <td>Transaction description</td>
+                        </tr>
+                        <tr>
+                            <td><code>Amount</code></td>
+                            <td><span class="badge bg-danger">Yes</span></td>
+                            <td>Negative for expenses, positive for income</td>
+                        </tr>
+                        <tr>
+                            <td><code>Category</code></td>
+                            <td><span class="badge bg-secondary">No</span></td>
+                            <td>Category name (must match existing)</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h6 class="mt-4">Example:</h6>
+                <pre class="bg-light p-2"><code>Date,Description,Amount,Category
+01/15/2024,Walmart Groceries,-85.42,Groceries
+01/16/2024,Direct Deposit,2500.00,Income
+01/17/2024,Netflix Subscription,-15.99,Subscriptions</code></pre>
+                
+                <div class="alert alert-info mt-3 mb-0">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>Duplicate Detection:</strong> Transactions are considered duplicates if they have the same date, 
+                    similar description, and amount within the same account.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

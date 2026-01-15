@@ -1,0 +1,107 @@
+@model LockMonthListViewModel
+@{
+    ViewData["Title"] = "Lock Month";
+}
+
+<h1 class="h3 mb-4"><i class="bi bi-lock me-2"></i>Lock Month</h1>
+
+<div class="alert alert-info">
+    <i class="bi bi-info-circle me-2"></i>
+    Locking a month prevents editing or deleting transactions in that month.
+    <strong>Adjustment transactions</strong> can still be added or modified in locked months.
+</div>
+
+<div class="row">
+    <!-- Unlocked Months -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-unlock me-2"></i>Unlocked Months</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.UnlockedMonths.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var month in Model.UnlockedMonths)
+                        {
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>@month.MonthName</strong>
+                                    <br />
+                                    <small class="text-muted">
+                                        @month.TransactionCount transactions • @month.TotalExpenses.ToString("C") spent
+                                    </small>
+                                </div>
+                                @if (month.CanLock)
+                                {
+                                    <form asp-action="Lock" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="year" value="@month.Year" />
+                                        <input type="hidden" name="month" value="@month.Month" />
+                                        <button type="submit" class="btn btn-warning btn-sm" 
+                                                onclick="return confirm('Lock @month.MonthName? Transactions in this month cannot be edited or deleted.');">
+                                            <i class="bi bi-lock me-1"></i>Lock
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Current/Future</span>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">No unlocked months with transactions.</p>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <!-- Locked Months -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0"><i class="bi bi-lock-fill me-2"></i>Locked Months</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.LockedMonths.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var month in Model.LockedMonths)
+                        {
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>@month.MonthName</strong>
+                                    <br />
+                                    <small class="text-muted">
+                                        Locked @month.LockedAt.ToString("g") by @month.LockedByUserName
+                                    </small>
+                                    <br />
+                                    <small class="text-muted">
+                                        @month.TransactionCount transactions • @month.TotalExpenses.ToString("C") spent
+                                    </small>
+                                </div>
+                                <form asp-action="Unlock" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="year" value="@month.Year" />
+                                    <input type="hidden" name="month" value="@month.Month" />
+                                    <button type="submit" class="btn btn-outline-secondary btn-sm"
+                                            onclick="return confirm('Unlock @month.MonthName?');">
+                                        <i class="bi bi-unlock me-1"></i>Unlock
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">No locked months.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

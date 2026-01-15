@@ -1,0 +1,151 @@
+@model BudgetVsActualReportViewModel
+@{
+    ViewData["Title"] = "Budget vs Actual";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="bi bi-bar-chart me-2"></i>Budget vs Actual - @Model.MonthName</h1>
+    <div class="btn-group">
+        <a asp-action="BudgetVsActual" asp-route-year="@(Model.Month == 1 ? Model.Year - 1 : Model.Year)" 
+           asp-route-month="@(Model.Month == 1 ? 12 : Model.Month - 1)" class="btn btn-outline-secondary">
+            <i class="bi bi-chevron-left"></i>
+        </a>
+        <a asp-action="BudgetVsActual" asp-route-year="@DateTime.Now.Year" asp-route-month="@DateTime.Now.Month" 
+           class="btn btn-outline-secondary">Today</a>
+        <a asp-action="BudgetVsActual" asp-route-year="@(Model.Month == 12 ? Model.Year + 1 : Model.Year)" 
+           asp-route-month="@(Model.Month == 12 ? 1 : Model.Month + 1)" class="btn btn-outline-secondary">
+            <i class="bi bi-chevron-right"></i>
+        </a>
+    </div>
+</div>
+
+<!-- Summary -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-muted">Total Budget</h6>
+                <h3 class="card-title mb-0">@Model.TotalBudget.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-muted">Total Actual</h6>
+                <h3 class="card-title mb-0 text-danger">@Model.TotalActual.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h6 class="card-subtitle mb-2 text-muted">Variance</h6>
+                <h3 class="card-title mb-0 @(Model.TotalVariance >= 0 ? "text-success" : "text-danger")">
+                    @Model.TotalVariance.ToString("C")
+                </h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Budget vs Actual by Category</h5>
+    </div>
+    <div class="card-body">
+        <canvas id="budgetVsActualChart" style="height: 400px;"></canvas>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Category</th>
+                    <th class="text-end">Budget</th>
+                    <th class="text-end">Actual</th>
+                    <th class="text-end">Variance</th>
+                    <th style="width: 200px;">Usage</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var cat in Model.Categories.OrderByDescending(c => c.Actual))
+                {
+                    <tr>
+                        <td class="fw-bold">@cat.CategoryName</td>
+                        <td class="text-end">@cat.Budget.ToString("C")</td>
+                        <td class="text-end text-danger">@cat.Actual.ToString("C")</td>
+                        <td class="text-end @(cat.Variance >= 0 ? "text-success" : "text-danger")">
+                            @cat.Variance.ToString("C")
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar @(cat.PercentUsed > 100 ? "bg-danger" : cat.PercentUsed > 80 ? "bg-warning" : "bg-success")" 
+                                     style="width: @(cat.Budget > 0 ? Math.Min(cat.PercentUsed, 100) : 100)%">
+                                    @cat.PercentUsed.ToString("N0")%
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="table-light">
+                <tr class="fw-bold">
+                    <td>Total</td>
+                    <td class="text-end">@Model.TotalBudget.ToString("C")</td>
+                    <td class="text-end text-danger">@Model.TotalActual.ToString("C")</td>
+                    <td class="text-end @(Model.TotalVariance >= 0 ? "text-success" : "text-danger")">
+                        @Model.TotalVariance.ToString("C")
+                    </td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        fetch('@Url.Action("GetBudgetVsActualChart", new { year = Model.Year, month = Model.Month })')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('budgetVsActualChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: data.datasets.map(ds => ({
+                            label: ds.label,
+                            data: ds.data,
+                            backgroundColor: ds.backgroundColor,
+                            borderColor: ds.borderColor,
+                            borderWidth: 1
+                        }))
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: value => '$' + value.toLocaleString()
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: context => context.dataset.label + ': $' + context.raw.toLocaleString()
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+    </script>
+}

@@ -1,0 +1,288 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">
+        <i class="bi bi-speedometer2 me-2"></i>Dashboard - @Model.MonthName
+    </h1>
+    <div class="btn-group">
+        <a asp-action="Index" asp-route-year="@(Model.Month == 1 ? Model.Year - 1 : Model.Year)" 
+           asp-route-month="@(Model.Month == 1 ? 12 : Model.Month - 1)" 
+           class="btn btn-outline-secondary">
+            <i class="bi bi-chevron-left"></i>
+        </a>
+        <a asp-action="Index" asp-route-year="@DateTime.Now.Year" asp-route-month="@DateTime.Now.Month" 
+           class="btn btn-outline-secondary">Today</a>
+        <a asp-action="Index" asp-route-year="@(Model.Month == 12 ? Model.Year + 1 : Model.Year)" 
+           asp-route-month="@(Model.Month == 12 ? 1 : Model.Month + 1)" 
+           class="btn btn-outline-secondary">
+            <i class="bi bi-chevron-right"></i>
+        </a>
+    </div>
+</div>
+
+@if (Model.IsMonthLocked)
+{
+    <div class="alert alert-warning">
+        <i class="bi bi-lock me-2"></i>This month is locked. Only adjustment transactions can be added.
+    </div>
+}
+
+@if (Model.UncategorizedCount > 0)
+{
+    <div class="alert alert-info">
+        <i class="bi bi-tag me-2"></i>You have @Model.UncategorizedCount uncategorized transactions.
+        <a asp-controller="Transactions" asp-action="Index" class="alert-link">Review them</a> or
+        <a asp-controller="Rules" asp-action="Index" class="alert-link">set up rules</a>.
+    </div>
+}
+
+<!-- Summary Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2">Total Income</h6>
+                <h3 class="card-title mb-0">@Model.TotalIncome.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger text-white">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2">Total Expenses</h6>
+                <h3 class="card-title mb-0">@Model.TotalExpenses.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-@(Model.NetChange >= 0 ? "primary" : "warning") text-white">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2">Net Change</h6>
+                <h3 class="card-title mb-0">@Model.NetChange.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-@Model.StatusClass text-white">
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2">Safe to Spend Today</h6>
+                <h3 class="card-title mb-0">@Model.SafeToSpendToday.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Budget Overview -->
+<div class="row mb-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Budget Overview</h5>
+                <a asp-controller="Budgets" asp-action="Index" asp-route-year="@Model.Year" asp-route-month="@Model.Month" 
+                   class="btn btn-sm btn-outline-primary">View Details</a>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>@Model.TotalSpent.ToString("C") of @Model.TotalBudget.ToString("C")</span>
+                        <span class="text-@Model.StatusClass">@Model.PercentUsed.ToString("N1")%</span>
+                    </div>
+                    <div class="progress" style="height: 25px;">
+                        <div class="progress-bar bg-@Model.StatusClass" role="progressbar" 
+                             style="width: @Math.Min(Model.PercentUsed, 100)%"></div>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col">
+                        <small class="text-muted">Budget</small>
+                        <div class="fw-bold">@Model.TotalBudget.ToString("C")</div>
+                    </div>
+                    <div class="col">
+                        <small class="text-muted">Spent</small>
+                        <div class="fw-bold">@Model.TotalSpent.ToString("C")</div>
+                    </div>
+                    <div class="col">
+                        <small class="text-muted">Remaining</small>
+                        <div class="fw-bold text-@(Model.Remaining >= 0 ? "success" : "danger")">@Model.Remaining.ToString("C")</div>
+                    </div>
+                    <div class="col">
+                        <small class="text-muted">Days Left</small>
+                        <div class="fw-bold">@Model.DaysRemaining</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a asp-controller="Transactions" asp-action="Create" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Add Transaction
+                    </a>
+                    <a asp-controller="Import" asp-action="Index" class="btn btn-outline-primary">
+                        <i class="bi bi-upload me-2"></i>Import CSV
+                    </a>
+                    <a asp-controller="Budgets" asp-action="Edit" asp-route-year="@Model.Year" asp-route-month="@Model.Month" 
+                       class="btn btn-outline-secondary">
+                        <i class="bi bi-pencil me-2"></i>Edit Budgets
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Top Categories -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Top Spending Categories</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.TopCategories.Any())
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var category in Model.TopCategories)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-bold">@category.CategoryName</span>
+                                    @if (category.BudgetAmount > 0)
+                                    {
+                                        <div class="progress mt-1" style="width: 150px; height: 8px;">
+                                            <div class="progress-bar bg-@category.StatusClass" 
+                                                 style="width: @Math.Min(category.PercentUsed, 100)%"></div>
+                                        </div>
+                                    }
+                                </div>
+                                <span class="badge bg-@category.StatusClass">@category.SpentAmount.ToString("C")</span>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">No spending recorded this month.</p>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <!-- Over Budget Alerts -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Over Budget</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.OverBudgetCategories.Any())
+                {
+                    <ul class="list-group list-group-flush">
+                        @foreach (var category in Model.OverBudgetCategories)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>@category.CategoryName</span>
+                                <span>
+                                    <span class="text-danger">@category.SpentAmount.ToString("C")</span>
+                                    <span class="text-muted">/ @category.BudgetAmount.ToString("C")</span>
+                                </span>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-success mb-0">
+                        <i class="bi bi-check-circle me-2"></i>All categories are within budget!
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Transactions -->
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Transactions</h5>
+                <a asp-controller="Transactions" asp-action="Index" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                @if (Model.RecentTransactions.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <tbody>
+                                @foreach (var tx in Model.RecentTransactions.Take(7))
+                                {
+                                    <tr>
+                                        <td class="text-muted">@tx.Date.ToString("MM/dd")</td>
+                                        <td>
+                                            @tx.Description.Substring(0, Math.Min(tx.Description.Length, 30))
+                                            @if (tx.Description.Length > 30) { <text>...</text> }
+                                        </td>
+                                        <td class="text-end @(tx.Amount >= 0 ? "text-success" : "text-danger")">
+                                            @tx.Amount.ToString("C")
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">No transactions this month.</p>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <!-- Top Expenses -->
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Top Expenses</h5>
+                <a asp-controller="Reports" asp-action="TopExpenses" asp-route-year="@Model.Year" asp-route-month="@Model.Month" 
+                   class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                @if (Model.TopExpenses.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <tbody>
+                                @foreach (var expense in Model.TopExpenses)
+                                {
+                                    <tr>
+                                        <td class="text-muted">@expense.Date.ToString("MM/dd")</td>
+                                        <td>
+                                            @expense.Description.Substring(0, Math.Min(expense.Description.Length, 25))
+                                            @if (expense.Description.Length > 25) { <text>...</text> }
+                                        </td>
+                                        <td><span class="badge bg-secondary">@expense.CategoryName</span></td>
+                                        <td class="text-end text-danger fw-bold">@expense.Amount.ToString("C")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">No expenses recorded this month.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

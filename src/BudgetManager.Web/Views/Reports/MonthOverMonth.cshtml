@@ -1,0 +1,110 @@
+@model MonthOverMonthReportViewModel
+@{
+    ViewData["Title"] = "Month over Month";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="bi bi-graph-up me-2"></i>Month over Month - @Model.Year</h1>
+    <div class="btn-group">
+        <a asp-action="MonthOverMonth" asp-route-year="@(Model.Year - 1)" class="btn btn-outline-secondary">
+            <i class="bi bi-chevron-left"></i> @(Model.Year - 1)
+        </a>
+        <a asp-action="MonthOverMonth" asp-route-year="@DateTime.Now.Year" class="btn btn-outline-secondary">
+            Current Year
+        </a>
+        <a asp-action="MonthOverMonth" asp-route-year="@(Model.Year + 1)" class="btn btn-outline-secondary">
+            @(Model.Year + 1) <i class="bi bi-chevron-right"></i>
+        </a>
+    </div>
+</div>
+
+<!-- Chart -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Income vs Expenses by Month</h5>
+    </div>
+    <div class="card-body">
+        <canvas id="monthOverMonthChart" style="height: 400px;"></canvas>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Month</th>
+                    <th class="text-end">Income</th>
+                    <th class="text-end">Expenses</th>
+                    <th class="text-end">Net Change</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var dp in Model.DataPoints)
+                {
+                    <tr>
+                        <td class="fw-bold">@dp.FullMonthName</td>
+                        <td class="text-end text-success">@dp.TotalIncome.ToString("C")</td>
+                        <td class="text-end text-danger">@dp.TotalExpenses.ToString("C")</td>
+                        <td class="text-end @(dp.NetChange >= 0 ? "text-success" : "text-danger")">
+                            @dp.NetChange.ToString("C")
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot class="table-light">
+                <tr class="fw-bold">
+                    <td>Total</td>
+                    <td class="text-end text-success">@Model.DataPoints.Sum(d => d.TotalIncome).ToString("C")</td>
+                    <td class="text-end text-danger">@Model.DataPoints.Sum(d => d.TotalExpenses).ToString("C")</td>
+                    <td class="text-end @(Model.DataPoints.Sum(d => d.NetChange) >= 0 ? "text-success" : "text-danger")">
+                        @Model.DataPoints.Sum(d => d.NetChange).ToString("C")
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        fetch('@Url.Action("GetMonthOverMonthChart", new { year = Model.Year })')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('monthOverMonthChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: data.datasets.map(ds => ({
+                            label: ds.label,
+                            data: ds.data,
+                            backgroundColor: ds.backgroundColor,
+                            borderColor: ds.borderColor,
+                            borderWidth: 1
+                        }))
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: value => '$' + value.toLocaleString()
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: context => context.dataset.label + ': $' + context.raw.toLocaleString()
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+    </script>
+}

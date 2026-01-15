@@ -1,0 +1,86 @@
+@model BudgetEditViewModel
+@{
+    ViewData["Title"] = "Edit Budgets";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0"><i class="bi bi-pencil me-2"></i>Edit Budgets - @Model.MonthName</h1>
+    <div>
+        <form asp-action="CopyFromPrevious" method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="year" value="@Model.Year" />
+            <input type="hidden" name="month" value="@Model.Month" />
+            <button type="submit" class="btn btn-outline-secondary" 
+                    onclick="return confirm('Copy budgets from the previous month?');">
+                <i class="bi bi-copy me-2"></i>Copy from Previous Month
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" name="year" value="@Model.Year" />
+            <input type="hidden" name="month" value="@Model.Month" />
+            
+            <div class="table-responsive">
+                <table class="table">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Category</th>
+                            <th class="text-end" style="width: 200px;">Budget Amount</th>
+                            <th class="text-end text-muted">Previous Budget</th>
+                            <th class="text-end text-muted">Previous Spent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <tr>
+                                <td class="fw-bold">@category.CategoryName</td>
+                                <td>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" step="0.01" min="0" 
+                                               name="budgets[@category.CategoryId]" 
+                                               value="@category.BudgetAmount.ToString("F2")"
+                                               class="form-control text-end" />
+                                    </div>
+                                </td>
+                                <td class="text-end text-muted">
+                                    @if (category.PreviousMonthBudget.HasValue)
+                                    {
+                                        @category.PreviousMonthBudget.Value.ToString("C")
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </td>
+                                <td class="text-end text-muted">
+                                    @if (category.PreviousMonthSpent.HasValue)
+                                    {
+                                        @category.PreviousMonthSpent.Value.ToString("C")
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle me-2"></i>Save Budgets
+                </button>
+                <a asp-action="Index" asp-route-year="@Model.Year" asp-route-month="@Model.Month" 
+                   class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
