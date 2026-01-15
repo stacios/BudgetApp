@@ -130,7 +130,7 @@ public class BudgetService : IBudgetService
         var spent = await _context.Transactions
             .Where(t => t.Date.Year == year && t.Date.Month == month && t.Amount < 0)
             .GroupBy(t => t.CategoryId)
-            .Select(g => new { CategoryId = g.Key, Total = g.Sum(t => Math.Abs(t.Amount)) })
+            .Select(g => new { CategoryId = g.Key, Total = g.Sum(t => -t.Amount) })
             .ToDictionaryAsync(x => x.CategoryId, x => x.Total);
         
         var daysInMonth = DateTime.DaysInMonth(year, month);

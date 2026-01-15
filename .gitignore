@@ -118,6 +118,11 @@ Desktop.ini
 *.ldf
 *.ndf
 
+# SQLite files
+*.db
+*.db-shm
+*.db-wal
+
 # Secrets
 secrets.json
 appsettings.*.local.json

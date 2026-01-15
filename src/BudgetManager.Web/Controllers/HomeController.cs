@@ -64,7 +64,7 @@ public class HomeController : Controller
             .ToListAsync();
         
         var totalIncome = transactions.Where(t => t.Amount > 0).Sum(t => t.Amount);
-        var totalExpenses = transactions.Where(t => t.Amount < 0).Sum(t => Math.Abs(t.Amount));
+        var totalExpenses = transactions.Where(t => t.Amount < 0).Sum(t => -t.Amount);
         
         // Get uncategorized count
         var uncategorizedId = await _context.Categories

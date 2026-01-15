@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Data.SqlClient;
 using BudgetManager.Web.Data;
 using BudgetManager.Web.Models;
 using BudgetManager.Web.Services.Interfaces;
@@ -46,44 +45,27 @@ public class LockingService : ILockingService
             return (false, $"{GetMonthName(month)} {year} is already locked.");
         }
         
-        try
+        var lockedMonth = new LockedMonth
         {
-            // Try to use stored procedure if available, otherwise use EF Core
-            var yearParam = new SqlParameter("@Year", year);
-            var monthParam = new SqlParameter("@Month", month);
-            var userIdParam = new SqlParameter("@UserId", userId);
-            
-            await _context.Database.ExecuteSqlRawAsync(
-                "EXEC sp_LockMonth @Year, @Month, @UserId",
-                yearParam, monthParam, userIdParam);
-            
-            return (true, $"{GetMonthName(month)} {year} has been locked.");
-        }
-        catch
-        {
-            // Fallback to EF Core if stored procedure doesn't exist
-            var lockedMonth = new LockedMonth
-            {
-                Year = year,
-                Month = month,
-                LockedByUserId = userId,
-                LockedAt = DateTime.UtcNow
-            };
-            
-            _context.LockedMonths.Add(lockedMonth);
-            await _context.SaveChangesAsync();
-            
-            await _activityLogService.LogAsync(
-                "LockedMonth",
-                lockedMonth.Id,
-                "Lock",
-                $"Locked {GetMonthName(month)} {year}",
-                null,
-                new { Year = year, Month = month },
-                userId);
-            
-            return (true, $"{GetMonthName(month)} {year} has been locked.");
-        }
+            Year = year,
+            Month = month,
+            LockedByUserId = userId,
+            LockedAt = DateTime.UtcNow
+        };
+        
+        _context.LockedMonths.Add(lockedMonth);
+        await _context.SaveChangesAsync();
+        
+        await _activityLogService.LogAsync(
+            "LockedMonth",
+            lockedMonth.Id,
+            "Lock",
+            $"Locked {GetMonthName(month)} {year}",
+            null,
+            new { Year = year, Month = month },
+            userId);
+        
+        return (true, $"{GetMonthName(month)} {year} has been locked.");
     }
     
     public async Task<(bool Success, string Message)> UnlockMonthAsync(int year, int month, string userId)

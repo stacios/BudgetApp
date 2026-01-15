@@ -72,14 +72,14 @@ public class ReportsController : Controller
             var categoryTotals = transactions
                 .Where(t => t.Amount < 0)
                 .GroupBy(t => t.Category?.Name ?? "Uncategorized")
-                .ToDictionary(g => g.Key, g => Math.Abs(g.Sum(t => t.Amount)));
+                .ToDictionary(g => g.Key, g => -g.Sum(t => t.Amount));
             
             dataPoints.Add(new MonthOverMonthDataPoint
             {
                 Year = targetYear,
                 Month = month,
                 TotalIncome = transactions.Where(t => t.Amount > 0).Sum(t => t.Amount),
-                TotalExpenses = Math.Abs(transactions.Where(t => t.Amount < 0).Sum(t => t.Amount)),
+                TotalExpenses = -transactions.Where(t => t.Amount < 0).Sum(t => t.Amount),
                 CategoryTotals = categoryTotals
             });
         }
@@ -166,7 +166,7 @@ public class ReportsController : Controller
                 Year = year,
                 Month = month,
                 TotalIncome = transactions.Where(t => t.Amount > 0).Sum(t => t.Amount),
-                TotalExpenses = Math.Abs(transactions.Where(t => t.Amount < 0).Sum(t => t.Amount))
+                TotalExpenses = -transactions.Where(t => t.Amount < 0).Sum(t => t.Amount)
             });
         }
         

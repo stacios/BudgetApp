@@ -31,7 +31,7 @@ public class LockMonthController : Controller
                 .CountAsync(t => t.Date.Year == lm.Year && t.Date.Month == lm.Month);
             var totalExpenses = await _context.Transactions
                 .Where(t => t.Date.Year == lm.Year && t.Date.Month == lm.Month && t.Amount < 0)
-                .SumAsync(t => Math.Abs(t.Amount));
+                .SumAsync(t => -t.Amount);
             
             lockedViewModels.Add(new LockMonthViewModel
             {
@@ -48,7 +48,7 @@ public class LockMonthController : Controller
         // Get unlocked months with transactions
         var monthsWithTransactions = await _context.Transactions
             .GroupBy(t => new { t.Date.Year, t.Date.Month })
-            .Select(g => new { g.Key.Year, g.Key.Month, Count = g.Count(), Total = g.Where(t => t.Amount < 0).Sum(t => Math.Abs(t.Amount)) })
+            .Select(g => new { g.Key.Year, g.Key.Month, Count = g.Count(), Total = g.Where(t => t.Amount < 0).Sum(t => -t.Amount) })
             .ToListAsync();
         
         var lockedKeys = lockedMonths.Select(lm => (lm.Year, lm.Month)).ToHashSet();

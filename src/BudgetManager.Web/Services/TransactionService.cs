@@ -60,12 +60,16 @@ public class TransactionService : ITransactionService
             
             if (filter.MinAmount.HasValue)
             {
-                query = query.Where(t => Math.Abs(t.Amount) >= filter.MinAmount.Value);
+                // Filter by absolute value: amount >= min OR amount <= -min
+                var minVal = filter.MinAmount.Value;
+                query = query.Where(t => t.Amount >= minVal || t.Amount <= -minVal);
             }
             
             if (filter.MaxAmount.HasValue)
             {
-                query = query.Where(t => Math.Abs(t.Amount) <= filter.MaxAmount.Value);
+                // Filter by absolute value: amount <= max AND amount >= -max
+                var maxVal = filter.MaxAmount.Value;
+                query = query.Where(t => t.Amount <= maxVal && t.Amount >= -maxVal);
             }
             
             if (filter.IsAdjustment.HasValue)
@@ -224,10 +228,10 @@ public class TransactionService : ITransactionService
             query = query.Where(t => t.AccountId == accountId.Value);
         }
         
-        // Sum negative amounts (expenses) as absolute value
+        // Sum negative amounts (expenses) as positive value
         var total = await query
             .Where(t => t.Amount < 0)
-            .SumAsync(t => Math.Abs(t.Amount));
+            .SumAsync(t => -t.Amount);
         
         return total;
     }
@@ -254,7 +258,7 @@ public class TransactionService : ITransactionService
             {
                 Date = t.Date,
                 Description = t.Description,
-                Amount = Math.Abs(t.Amount),
+                Amount = -t.Amount,
                 CategoryName = t.Category != null ? t.Category.Name : "Uncategorized"
             })
             .ToListAsync();

@@ -44,7 +44,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<Transaction>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.Amount).HasColumnType("decimal(18,2)");
+            entity.Property(e => e.Amount).HasConversion<double>();
             entity.Property(e => e.Description).IsRequired().HasMaxLength(500);
             
             entity.HasOne(e => e.Category)
@@ -70,7 +70,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         builder.Entity<MonthlyBudget>(entity =>
         {
             entity.HasKey(e => e.Id);
-            entity.Property(e => e.BudgetAmount).HasColumnType("decimal(18,2)");
+            entity.Property(e => e.BudgetAmount).HasConversion<double>();
             entity.HasIndex(e => new { e.Year, e.Month, e.CategoryId }).IsUnique();
             
             entity.HasOne(e => e.Category)

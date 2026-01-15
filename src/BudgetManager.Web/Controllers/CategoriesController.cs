@@ -33,7 +33,7 @@ public class CategoriesController : Controller
             var transactionCount = await _context.Transactions.CountAsync(t => t.CategoryId == c.Id);
             var totalSpent = await _context.Transactions
                 .Where(t => t.CategoryId == c.Id && t.Amount < 0)
-                .SumAsync(t => Math.Abs(t.Amount));
+                .SumAsync(t => -t.Amount);
             
             categoryViewModels.Add(new CategoryViewModel
             {
