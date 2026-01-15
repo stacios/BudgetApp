@@ -31,7 +31,7 @@ A comprehensive .NET 8 ASP.NET Core MVC application for personal budget manageme
 ## Technology Stack
 
 - **.NET 8** with ASP.NET Core MVC
-- **Entity Framework Core 8** with SQL Server
+- **Entity Framework Core 8** with SQLite (cross-platform compatible)
 - **ASP.NET Core Identity** for authentication
 - **Bootstrap 5** with responsive design
 - **Chart.js** for data visualization
@@ -41,12 +41,9 @@ A comprehensive .NET 8 ASP.NET Core MVC application for personal budget manageme
 
 ### Prerequisites
 - .NET 8 SDK
-- SQL Server (LocalDB, Express, or full version)
-- Docker (optional, for containerized SQL Server)
+- No database server required (uses SQLite file-based database)
 
 ### Local Development Setup
-
-#### Option 1: Using LocalDB (Windows)
 
 1. Clone the repository:
    ```bash
@@ -59,51 +56,17 @@ A comprehensive .NET 8 ASP.NET Core MVC application for personal budget manageme
    dotnet restore
    ```
 
-3. Update the connection string in `src/BudgetManager.Web/appsettings.Development.json`:
-   ```json
-   {
-     "ConnectionStrings": {
-       "Default": "Server=(localdb)\\mssqllocaldb;Database=BudgetManager_Dev;Trusted_Connection=True;MultipleActiveResultSets=true"
-     }
-   }
-   ```
-
-4. Apply migrations:
+3. Run the application:
    ```bash
    cd src/BudgetManager.Web
-   dotnet ef database update
-   ```
-
-5. Run the application:
-   ```bash
    dotnet run
    ```
 
-6. Open https://localhost:5001 in your browser
+4. The database will be created automatically on first run with migrations applied and seed data loaded.
 
-#### Option 2: Using Docker SQL Server
+5. Open http://localhost:5000 (or the port shown in the console) in your browser
 
-1. Start SQL Server in Docker:
-   ```bash
-   docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong@Passw0rd" \
-     -p 1433:1433 --name sqlserver -d mcr.microsoft.com/mssql/server:2022-latest
-   ```
-
-2. Update the connection string:
-   ```json
-   {
-     "ConnectionStrings": {
-       "Default": "Server=localhost,1433;Database=BudgetManager;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True"
-     }
-   }
-   ```
-
-3. Apply migrations and run:
-   ```bash
-   cd src/BudgetManager.Web
-   dotnet ef database update
-   dotnet run
-   ```
+**Note:** The application uses SQLite, which creates a local database file (`BudgetManager.db`) in the project directory. This file is automatically created and does not require any additional setup. The database file is excluded from version control via `.gitignore`.
 
 ### Default Demo User
 - **Email**: demo@budgetmanager.com
@@ -255,6 +218,10 @@ To deploy SQL scripts:
 :r sql/vw_MonthlyCategorySummary.sql
 :r sql/sp_LockMonth.sql
 ```
+
+## Development Notes
+
+For details about the development process and challenges overcome during the project, including the migration from SQL Server to SQLite for cross-platform compatibility, see [DEVELOPMENT_SUMMARY.md](DEVELOPMENT_SUMMARY.md).
 
 ## Contributing
 
