@@ -2,7 +2,7 @@
 
 **Full-stack web app for tracking expenses, budgets, and insights (.NET 8, ASP.NET Core MVC, EF Core, SQLite, ASP.NET Identity, Bootstrap 5, Chart.js, Google Charts, xUnit, CsvHelper, Python, pandas, matplotlib, Plotly, Jupyter)**
 
-Built a polished personal finance app using .NET 8, ASP.NET Core MVC, Razor Views, Entity Framework Core 8, SQLite, and ASP.NET Core Identity, featuring integrated data visualizations and supplementary Python-based analysis
+Built a polished personal finance app using .NET 8, ASP.NET Core MVC, Razor Views, Entity Framework Core 8, SQLite, and ASP.NET Core Identity, featuring integrated data visualizations, modern UI/UX enhancements, and supplementary Python-based analysis
 
 • Designed a normalized data model (Transactions, Budgets, Categories, Accounts, LockedMonths) with EF Core migrations, decimal-precision financial calculations, and cross-platform SQLite compatibility (migrated from SQL Server LocalDB for macOS/Linux support)
 
@@ -18,9 +18,11 @@ Built a polished personal finance app using .NET 8, ASP.NET Core MVC, Razor View
 
 • Generated reports with Chart.js 4.4.1 and Bootstrap 5.3.2 integration showing month-over-month spending trends, top expenses analysis, and budget vs. actual comparisons with interactive filtering and responsive design
 
-• Integrated advanced financial visualizations into the web dashboard including: spending-by-category horizontal bar charts, 14-day daily spending trend analysis with budget target and average lines, interactive spending calendar heatmap with intensity-based coloring, and Google Charts Sankey diagrams showing cash flow from income through categories to individual merchants
+• Integrated advanced financial visualizations into the web dashboard including: animated donut charts for category spending with smooth rotation animations and gradient fills, 14-day daily spending trend analysis with budget target and average lines using Chart.js mixed bar/line charts, interactive spending calendar heatmap with intensity-based coloring, and Google Charts Sankey diagrams showing simplified cash flow from income through top categories to savings
 
-• Built RESTful API endpoints serving JSON chart data for real-time dashboard visualizations, enabling dynamic updates without page reloads and supporting responsive chart rendering across device sizes
+• Enhanced UI/UX with modern design elements: gradient summary cards with hover lift animations and background glow effects, animated number counters using Intersection Observer API for scroll-triggered counting animations, dark mode toggle with CSS custom properties and localStorage persistence, Inter font family for modern typography, and comprehensive micro-interactions throughout the interface
+
+• Built RESTful API endpoints serving JSON chart data for real-time dashboard visualizations, enabling dynamic updates without page reloads and supporting responsive chart rendering across device sizes with theme-aware color schemes
 
 • Created a supplementary Jupyter notebook data analysis pipeline using Python, pandas, NumPy, matplotlib, and Plotly for offline exploratory analysis, prototyping visualizations, and generating exportable financial reports
 
