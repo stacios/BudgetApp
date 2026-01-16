@@ -4,9 +4,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BudgetManager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script>
+        // Check for saved theme preference or default to light
+        (function() {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 </head>
 <body>
     <header>
@@ -68,7 +78,13 @@
                             </a>
                         </li>
                     </ul>
-                    <partial name="_LoginPartial" />
+                    <div class="d-flex align-items-center gap-3">
+                        <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+                            <i class="bi bi-moon-fill"></i>
+                            <i class="bi bi-sun-fill"></i>
+                        </button>
+                        <partial name="_LoginPartial" />
+                    </div>
                 </div>
             </div>
         </nav>

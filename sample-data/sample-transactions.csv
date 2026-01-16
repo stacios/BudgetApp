@@ -1,32 +1,100 @@
 Date,Description,Amount,Category
-01/02/2024,Direct Deposit - Payroll,2500.00,Income
-01/03/2024,Walmart Grocery #1234,-87.45,Groceries
-01/04/2024,Starbucks Coffee,-6.75,Dining Out
-01/05/2024,Netflix Subscription,-15.99,Subscriptions
-01/06/2024,Shell Gas Station,-45.00,Transportation
-01/07/2024,Chipotle Mexican Grill,-12.50,Dining Out
-01/08/2024,Amazon Prime Monthly,-14.99,Subscriptions
-01/09/2024,Kroger Supermarket,-65.32,Groceries
-01/10/2024,Uber Ride,-18.75,Transportation
-01/11/2024,Electric Company Bill,-125.00,Utilities
-01/12/2024,AT&T Wireless,-85.00,Utilities
-01/13/2024,Target Shopping,-45.67,Shopping
-01/14/2024,Spotify Premium,-9.99,Subscriptions
-01/15/2024,Whole Foods Market,-98.45,Groceries
-01/15/2024,Direct Deposit - Payroll,2500.00,Income
-01/16/2024,McDonald's,-8.99,Dining Out
-01/17/2024,Chevron Gas,-52.00,Transportation
-01/18/2024,Hulu Subscription,-17.99,Subscriptions
-01/19/2024,Water Bill,-45.00,Utilities
-01/20/2024,DoorDash Delivery,-32.50,Dining Out
-01/21/2024,Trader Joe's,-67.89,Groceries
-01/22/2024,Lyft Ride,-14.25,Transportation
-01/23/2024,Internet Provider,-79.99,Utilities
-01/24/2024,CVS Pharmacy,-23.45,Healthcare
-01/25/2024,AMC Movie Tickets,-28.00,Entertainment
-01/26/2024,Costco Wholesale,-156.78,Groceries
-01/27/2024,Gym Membership,-49.99,Personal Care
-01/28/2024,Apple iCloud Storage,-2.99,Subscriptions
-01/29/2024,Exxon Gas Station,-48.00,Transportation
-01/30/2024,Restaurant Dinner,-75.00,Dining Out
-01/31/2024,Rent Payment,-1500.00,Housing
+11/01/2025,Rent Payment,-1500.00,Housing
+11/01/2025,Direct Deposit - Payroll,2600.00,Income
+11/03/2025,Walmart Grocery #1234,-92.45,Groceries
+11/04/2025,Starbucks Coffee,-7.25,Dining Out
+11/05/2025,Netflix Subscription,-15.99,Subscriptions
+11/06/2025,Shell Gas Station,-48.00,Transportation
+11/07/2025,Chipotle Mexican Grill,-14.50,Dining Out
+11/08/2025,Amazon Prime Monthly,-14.99,Subscriptions
+11/09/2025,Kroger Supermarket,-68.32,Groceries
+11/10/2025,Uber Ride,-22.75,Transportation
+11/11/2025,Electric Company Bill,-132.00,Utilities
+11/12/2025,AT&T Wireless,-89.00,Utilities
+11/15/2025,Direct Deposit - Payroll,2600.00,Income
+11/16/2025,Target Shopping,-52.67,Shopping
+11/17/2025,Spotify Premium,-10.99,Subscriptions
+11/18/2025,Whole Foods Market,-105.45,Groceries
+11/20/2025,McDonald's,-9.99,Dining Out
+11/22/2025,Chevron Gas,-55.00,Transportation
+11/25/2025,Water Bill,-48.00,Utilities
+11/28/2025,Trader Joe's,-72.89,Groceries
+11/30/2025,Internet Provider,-84.99,Utilities
+12/01/2025,Rent Payment,-1500.00,Housing
+12/01/2025,Direct Deposit - Payroll,2600.00,Income
+12/02/2025,Costco Wholesale,-165.78,Groceries
+12/03/2025,Starbucks Coffee,-8.50,Dining Out
+12/04/2025,Gym Membership,-54.99,Personal Care
+12/05/2025,Netflix Subscription,-15.99,Subscriptions
+12/06/2025,Shell Gas Station,-52.00,Transportation
+12/08/2025,DoorDash Delivery,-38.50,Dining Out
+12/10/2025,Electric Company Bill,-145.00,Utilities
+12/12/2025,Amazon Holiday Shopping,-234.56,Shopping
+12/15/2025,Direct Deposit - Payroll,2600.00,Income
+12/16/2025,Kroger Supermarket,-89.45,Groceries
+12/18/2025,Lyft Ride,-18.25,Transportation
+12/20/2025,Restaurant Dinner,-95.00,Dining Out
+12/22/2025,Holiday Gifts,-175.00,Shopping
+12/24/2025,Whole Foods Market,-142.30,Groceries
+12/26/2025,Chevron Gas,-58.00,Transportation
+12/28/2025,Hulu Subscription,-17.99,Subscriptions
+12/30/2025,Internet Provider,-84.99,Utilities
+01/01/2026,Rent Payment,-1500.00,Housing
+01/01/2026,Direct Deposit - Payroll,2600.00,Income
+01/02/2026,Walmart Grocery #1234,-78.90,Groceries
+01/03/2026,Starbucks Coffee,-6.75,Dining Out
+01/05/2026,Netflix Subscription,-15.99,Subscriptions
+01/06/2026,Uber Ride,-25.50,Transportation
+01/08/2026,Amazon Prime Monthly,-14.99,Subscriptions
+01/10/2026,Electric Company Bill,-128.00,Utilities
+01/12/2026,AT&T Wireless,-89.00,Utilities
+01/14/2026,Target Shopping,-67.45,Shopping
+01/15/2026,Direct Deposit - Payroll,2600.00,Income
+01/16/2026,Kroger Supermarket,-72.15,Groceries
+01/18/2026,Chipotle Mexican Grill,-15.75,Dining Out
+01/20/2026,Shell Gas Station,-49.00,Transportation
+01/22/2026,Spotify Premium,-10.99,Subscriptions
+01/24/2026,Whole Foods Market,-98.60,Groceries
+01/25/2026,CVS Pharmacy,-28.45,Healthcare
+01/26/2026,Water Bill,-46.00,Utilities
+01/28/2026,Restaurant Dinner,-82.00,Dining Out
+01/30/2026,Internet Provider,-84.99,Utilities
+02/01/2026,Rent Payment,-1500.00,Housing
+02/01/2026,Direct Deposit - Payroll,2600.00,Income
+02/02/2026,Costco Wholesale,-145.32,Groceries
+02/03/2026,Starbucks Coffee,-7.50,Dining Out
+02/04/2026,Gym Membership,-54.99,Personal Care
+02/05/2026,Netflix Subscription,-15.99,Subscriptions
+02/06/2026,Chevron Gas,-51.00,Transportation
+02/08/2026,DoorDash Delivery,-35.75,Dining Out
+02/10/2026,Electric Company Bill,-118.00,Utilities
+02/12/2026,Amazon Shopping,-89.99,Shopping
+02/14/2026,Valentine's Day Dinner,-125.00,Dining Out
+02/15/2026,Direct Deposit - Payroll,2600.00,Income
+02/16/2026,Trader Joe's,-68.45,Groceries
+02/18/2026,Lyft Ride,-16.50,Transportation
+02/20/2026,AT&T Wireless,-89.00,Utilities
+02/22/2026,Hulu Subscription,-17.99,Subscriptions
+02/24/2026,Kroger Supermarket,-82.30,Groceries
+02/26/2026,Shell Gas Station,-47.00,Transportation
+02/28/2026,Internet Provider,-84.99,Utilities
+03/01/2026,Rent Payment,-1500.00,Housing
+03/01/2026,Direct Deposit - Payroll,2600.00,Income
+03/02/2026,Walmart Grocery #1234,-95.67,Groceries
+03/03/2026,Starbucks Coffee,-8.25,Dining Out
+03/04/2026,Uber Ride,-28.00,Transportation
+03/05/2026,Netflix Subscription,-15.99,Subscriptions
+03/06/2026,Amazon Prime Monthly,-14.99,Subscriptions
+03/08/2026,Chipotle Mexican Grill,-16.25,Dining Out
+03/10/2026,Electric Company Bill,-115.00,Utilities
+03/12/2026,Target Shopping,-78.90,Shopping
+03/14/2026,Whole Foods Market,-112.45,Groceries
+03/15/2026,Direct Deposit - Payroll,2600.00,Income
+03/16/2026,Chevron Gas,-54.00,Transportation
+03/18/2026,Spotify Premium,-10.99,Subscriptions
+03/20/2026,Water Bill,-44.00,Utilities
+03/22/2026,Restaurant Dinner,-88.00,Dining Out
+03/24/2026,Kroger Supermarket,-76.80,Groceries
+03/26/2026,Gym Membership,-54.99,Personal Care
+03/28/2026,Internet Provider,-84.99,Utilities
+03/30/2026,CVS Pharmacy,-32.50,Healthcare

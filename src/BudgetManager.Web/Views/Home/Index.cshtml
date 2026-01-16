@@ -39,91 +39,116 @@
     </div>
 }
 
-<!-- Summary Cards -->
-<div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card bg-success text-white">
+<!-- Summary Cards with Gradients & Animated Counters -->
+<div class="row mb-4 g-4">
+    <div class="col-md-6 col-lg-3">
+        <div class="card summary-card card-income fade-in-up">
             <div class="card-body">
+                <i class="bi bi-arrow-down-circle card-icon"></i>
                 <h6 class="card-subtitle mb-2">Total Income</h6>
-                <h3 class="card-title mb-0">@Model.TotalIncome.ToString("C")</h3>
+                <h3 class="card-title">
+                    <span class="counter-value" data-counter="@Model.TotalIncome" data-prefix="$">$0.00</span>
+                </h3>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card bg-danger text-white">
+    <div class="col-md-6 col-lg-3">
+        <div class="card summary-card card-expenses fade-in-up">
             <div class="card-body">
+                <i class="bi bi-arrow-up-circle card-icon"></i>
                 <h6 class="card-subtitle mb-2">Total Expenses</h6>
-                <h3 class="card-title mb-0">@Model.TotalExpenses.ToString("C")</h3>
+                <h3 class="card-title">
+                    <span class="counter-value" data-counter="@Model.TotalExpenses" data-prefix="$">$0.00</span>
+                </h3>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card bg-@(Model.NetChange >= 0 ? "primary" : "warning") text-white">
+    <div class="col-md-6 col-lg-3">
+        <div class="card summary-card @(Model.NetChange >= 0 ? "card-savings" : "card-warning") fade-in-up">
             <div class="card-body">
+                <i class="bi bi-wallet2 card-icon"></i>
                 <h6 class="card-subtitle mb-2">Net Change</h6>
-                <h3 class="card-title mb-0">@Model.NetChange.ToString("C")</h3>
+                <h3 class="card-title">
+                    <span class="counter-value" data-counter="@Model.NetChange" data-prefix="@(Model.NetChange >= 0 ? "$" : "-$")">$0.00</span>
+                </h3>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card bg-@Model.StatusClass text-white">
+    <div class="col-md-6 col-lg-3">
+        <div class="card summary-card card-neutral fade-in-up">
             <div class="card-body">
+                <i class="bi bi-cash-stack card-icon"></i>
                 <h6 class="card-subtitle mb-2">Safe to Spend Today</h6>
-                <h3 class="card-title mb-0">@Model.SafeToSpendToday.ToString("C")</h3>
+                <h3 class="card-title">
+                    <span class="counter-value" data-counter="@Model.SafeToSpendToday" data-prefix="$">$0.00</span>
+                </h3>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Budget Overview -->
+<!-- Budget Overview with Animated Progress -->
 <div class="row mb-4">
-    <div class="col-md-8">
-        <div class="card">
+    <div class="col-lg-8">
+        <div class="card h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Budget Overview</h5>
+                <h5 class="mb-0"><i class="bi bi-speedometer me-2"></i>Budget Overview</h5>
                 <a asp-controller="Budgets" asp-action="Index" asp-route-year="@Model.Year" asp-route-month="@Model.Month" 
                    class="btn btn-sm btn-outline-primary">View Details</a>
             </div>
             <div class="card-body">
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between mb-1">
-                        <span>@Model.TotalSpent.ToString("C") of @Model.TotalBudget.ToString("C")</span>
-                        <span class="text-@Model.StatusClass">@Model.PercentUsed.ToString("N1")%</span>
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="fw-medium">
+                            <span class="counter-value" data-counter="@Model.TotalSpent" data-prefix="$">$0.00</span>
+                            of @Model.TotalBudget.ToString("C")
+                        </span>
+                        <span class="badge bg-@Model.StatusClass fs-6">@Model.PercentUsed.ToString("N1")%</span>
                     </div>
-                    <div class="progress" style="height: 25px;">
-                        <div class="progress-bar bg-@Model.StatusClass" role="progressbar" 
-                             style="width: @Math.Min(Model.PercentUsed, 100)%"></div>
+                    <div class="progress" style="height: 12px;">
+                        <div class="progress-bar bg-@Model.StatusClass" 
+                             role="progressbar" 
+                             data-width="@Math.Min(Model.PercentUsed, 100)%"
+                             style="width: 0; transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);"></div>
                     </div>
                 </div>
-                <div class="row text-center">
-                    <div class="col">
-                        <small class="text-muted">Budget</small>
-                        <div class="fw-bold">@Model.TotalBudget.ToString("C")</div>
+                <div class="row text-center g-3">
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 rounded" style="background: var(--bg-body);">
+                            <small class="text-muted d-block mb-1">Budget</small>
+                            <div class="fw-bold fs-5">@Model.TotalBudget.ToString("C")</div>
+                        </div>
                     </div>
-                    <div class="col">
-                        <small class="text-muted">Spent</small>
-                        <div class="fw-bold">@Model.TotalSpent.ToString("C")</div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 rounded" style="background: var(--bg-body);">
+                            <small class="text-muted d-block mb-1">Spent</small>
+                            <div class="fw-bold fs-5">@Model.TotalSpent.ToString("C")</div>
+                        </div>
                     </div>
-                    <div class="col">
-                        <small class="text-muted">Remaining</small>
-                        <div class="fw-bold text-@(Model.Remaining >= 0 ? "success" : "danger")">@Model.Remaining.ToString("C")</div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 rounded" style="background: var(--bg-body);">
+                            <small class="text-muted d-block mb-1">Remaining</small>
+                            <div class="fw-bold fs-5 text-@(Model.Remaining >= 0 ? "success" : "danger")">@Model.Remaining.ToString("C")</div>
+                        </div>
                     </div>
-                    <div class="col">
-                        <small class="text-muted">Days Left</small>
-                        <div class="fw-bold">@Model.DaysRemaining</div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-3 rounded" style="background: var(--bg-body);">
+                            <small class="text-muted d-block mb-1">Days Left</small>
+                            <div class="fw-bold fs-5">@Model.DaysRemaining</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card">
+    <div class="col-lg-4">
+        <div class="card h-100">
             <div class="card-header">
-                <h5 class="mb-0">Quick Actions</h5>
+                <h5 class="mb-0"><i class="bi bi-lightning-charge me-2"></i>Quick Actions</h5>
             </div>
-            <div class="card-body">
-                <div class="d-grid gap-2">
-                    <a asp-controller="Transactions" asp-action="Create" class="btn btn-primary">
+            <div class="card-body d-flex flex-column justify-content-center">
+                <div class="d-grid gap-3">
+                    <a asp-controller="Transactions" asp-action="Create" class="btn btn-primary btn-lg">
                         <i class="bi bi-plus-circle me-2"></i>Add Transaction
                     </a>
                     <a asp-controller="Import" asp-action="Index" class="btn btn-outline-primary">
@@ -139,99 +164,174 @@
     </div>
 </div>
 
-<div class="row">
-    <!-- Top Categories -->
-    <div class="col-md-6 mb-4">
+<!-- Spending Visualizations Row - Donut Chart & Daily Trend -->
+<div class="row mb-4 g-4">
+    <!-- Animated Donut Chart -->
+    <div class="col-lg-5">
         <div class="card h-100">
             <div class="card-header">
-                <h5 class="mb-0">Top Spending Categories</h5>
+                <h5 class="mb-0"><i class="bi bi-pie-chart me-2"></i>Spending by Category</h5>
+            </div>
+            <div class="card-body">
+                <div class="donut-chart-container" style="height: 320px; position: relative;">
+                    <canvas id="categoryDonutChart"></canvas>
+                    <div class="donut-center-text">
+                        <div class="total-label">Total Spent</div>
+                        <div class="total-value">@Model.TotalSpent.ToString("C")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Daily Spending Trend -->
+    <div class="col-lg-7">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Daily Spending (Last 14 Days)</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="dailySpendingChart" style="height: 320px;"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Spending Calendar and Cash Flow -->
+<div class="row mb-4 g-4">
+    <!-- Spending Calendar Heatmap -->
+    <div class="col-lg-6">
+        <div class="card h-100 spending-calendar-card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-calendar3 me-2"></i>Spending Calendar</h5>
+            </div>
+            <div class="card-body d-flex flex-column" style="min-height: 320px;">
+                <div id="spendingCalendar" class="spending-calendar flex-grow-1"></div>
+                <div class="d-flex justify-content-center align-items-center mt-auto pt-2 gap-1">
+                    <small class="text-muted me-2">Less</small>
+                    <span class="calendar-legend" style="background: var(--bg-card);"></span>
+                    <span class="calendar-legend" style="background: rgba(16, 185, 129, 0.2);"></span>
+                    <span class="calendar-legend" style="background: rgba(245, 158, 11, 0.3);"></span>
+                    <span class="calendar-legend" style="background: rgba(239, 68, 68, 0.4);"></span>
+                    <span class="calendar-legend" style="background: rgba(239, 68, 68, 0.7);"></span>
+                    <small class="text-muted ms-2">More</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Cash Flow Sankey -->
+    <div class="col-lg-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-diagram-3 me-2"></i>Cash Flow</h5>
+            </div>
+            <div class="card-body" id="sankeyCardBody">
+                <div id="sankeyChart"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Top Categories with Mini Progress -->
+    <div class="col-lg-6 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-bar-chart me-2"></i>Top Spending Categories</h5>
             </div>
             <div class="card-body">
                 @if (Model.TopCategories.Any())
                 {
-                    <ul class="list-group list-group-flush">
+                    <div class="d-flex flex-column gap-3">
                         @foreach (var category in Model.TopCategories)
                         {
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span class="fw-bold">@category.CategoryName</span>
-                                    @if (category.BudgetAmount > 0)
-                                    {
-                                        <div class="progress mt-1" style="width: 150px; height: 8px;">
-                                            <div class="progress-bar bg-@category.StatusClass" 
-                                                 style="width: @Math.Min(category.PercentUsed, 100)%"></div>
-                                        </div>
-                                    }
+                            <div class="category-item">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="fw-medium">@category.CategoryName</span>
+                                    <span class="badge bg-@category.StatusClass">@category.SpentAmount.ToString("C")</span>
                                 </div>
-                                <span class="badge bg-@category.StatusClass">@category.SpentAmount.ToString("C")</span>
-                            </li>
+                                @if (category.BudgetAmount > 0)
+                                {
+                                    <div class="progress" style="height: 6px;">
+                                        <div class="progress-bar bg-@category.StatusClass" 
+                                             data-width="@Math.Min(category.PercentUsed, 100)%"
+                                             style="width: 0;"></div>
+                                    </div>
+                                    <small class="text-muted">@category.PercentUsed.ToString("N0")% of @category.BudgetAmount.ToString("C")</small>
+                                }
+                            </div>
                         }
-                    </ul>
+                    </div>
                 }
                 else
                 {
-                    <p class="text-muted mb-0">No spending recorded this month.</p>
+                    <div class="text-center py-4">
+                        <i class="bi bi-inbox text-muted" style="font-size: 2rem;"></i>
+                        <p class="text-muted mb-0 mt-2">No spending recorded this month.</p>
+                    </div>
                 }
             </div>
         </div>
     </div>
     
     <!-- Over Budget Alerts -->
-    <div class="col-md-6 mb-4">
+    <div class="col-lg-6 mb-4">
         <div class="card h-100">
-            <div class="card-header bg-danger text-white">
+            <div class="card-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white;">
                 <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Over Budget</h5>
             </div>
             <div class="card-body">
                 @if (Model.OverBudgetCategories.Any())
                 {
-                    <ul class="list-group list-group-flush">
+                    <div class="d-flex flex-column gap-3">
                         @foreach (var category in Model.OverBudgetCategories)
                         {
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <span>@category.CategoryName</span>
-                                <span>
-                                    <span class="text-danger">@category.SpentAmount.ToString("C")</span>
+                            <div class="d-flex justify-content-between align-items-center p-3 rounded" style="background: rgba(239, 68, 68, 0.1);">
+                                <span class="fw-medium">@category.CategoryName</span>
+                                <div class="text-end">
+                                    <span class="text-danger fw-bold">@category.SpentAmount.ToString("C")</span>
                                     <span class="text-muted">/ @category.BudgetAmount.ToString("C")</span>
-                                </span>
-                            </li>
+                                </div>
+                            </div>
                         }
-                    </ul>
+                    </div>
                 }
                 else
                 {
-                    <p class="text-success mb-0">
-                        <i class="bi bi-check-circle me-2"></i>All categories are within budget!
-                    </p>
+                    <div class="text-center py-4">
+                        <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
+                        <p class="text-success fw-medium mt-2 mb-0">All categories are within budget!</p>
+                    </div>
                 }
             </div>
         </div>
     </div>
 </div>
 
-<!-- Recent Transactions -->
-<div class="row">
-    <div class="col-md-6 mb-4">
+<!-- Recent Transactions & Top Expenses -->
+<div class="row g-4">
+    <div class="col-lg-6 mb-4">
         <div class="card h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Recent Transactions</h5>
+                <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i>Recent Transactions</h5>
                 <a asp-controller="Transactions" asp-action="Index" class="btn btn-sm btn-outline-primary">View All</a>
             </div>
             <div class="card-body">
                 @if (Model.RecentTransactions.Any())
                 {
                     <div class="table-responsive">
-                        <table class="table table-sm table-hover mb-0">
+                        <table class="table table-hover mb-0">
                             <tbody>
                                 @foreach (var tx in Model.RecentTransactions.Take(7))
                                 {
                                     <tr>
-                                        <td class="text-muted">@tx.Date.ToString("MM/dd")</td>
+                                        <td class="text-muted" style="width: 60px;">@tx.Date.ToString("MM/dd")</td>
                                         <td>
                                             @tx.Description.Substring(0, Math.Min(tx.Description.Length, 30))
                                             @if (tx.Description.Length > 30) { <text>...</text> }
                                         </td>
-                                        <td class="text-end @(tx.Amount >= 0 ? "text-success" : "text-danger")">
+                                        <td class="text-end fw-bold @(tx.Amount >= 0 ? "text-success" : "text-danger")" style="width: 100px;">
                                             @tx.Amount.ToString("C")
                                         </td>
                                     </tr>
@@ -242,17 +342,20 @@
                 }
                 else
                 {
-                    <p class="text-muted mb-0">No transactions this month.</p>
+                    <div class="text-center py-4">
+                        <i class="bi bi-inbox text-muted" style="font-size: 2rem;"></i>
+                        <p class="text-muted mb-0 mt-2">No transactions this month.</p>
+                    </div>
                 }
             </div>
         </div>
     </div>
     
     <!-- Top Expenses -->
-    <div class="col-md-6 mb-4">
+    <div class="col-lg-6 mb-4">
         <div class="card h-100">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Top Expenses</h5>
+                <h5 class="mb-0"><i class="bi bi-trophy me-2"></i>Top Expenses</h5>
                 <a asp-controller="Reports" asp-action="TopExpenses" asp-route-year="@Model.Year" asp-route-month="@Model.Month" 
                    class="btn btn-sm btn-outline-primary">View All</a>
             </div>
@@ -260,18 +363,18 @@
                 @if (Model.TopExpenses.Any())
                 {
                     <div class="table-responsive">
-                        <table class="table table-sm table-hover mb-0">
+                        <table class="table table-hover mb-0">
                             <tbody>
                                 @foreach (var expense in Model.TopExpenses)
                                 {
                                     <tr>
-                                        <td class="text-muted">@expense.Date.ToString("MM/dd")</td>
+                                        <td class="text-muted" style="width: 60px;">@expense.Date.ToString("MM/dd")</td>
                                         <td>
-                                            @expense.Description.Substring(0, Math.Min(expense.Description.Length, 25))
-                                            @if (expense.Description.Length > 25) { <text>...</text> }
+                                            @expense.Description.Substring(0, Math.Min(expense.Description.Length, 22))
+                                            @if (expense.Description.Length > 22) { <text>...</text> }
                                         </td>
                                         <td><span class="badge bg-secondary">@expense.CategoryName</span></td>
-                                        <td class="text-end text-danger fw-bold">@expense.Amount.ToString("C")</td>
+                                        <td class="text-end text-danger fw-bold" style="width: 100px;">@expense.Amount.ToString("C")</td>
                                     </tr>
                                 }
                             </tbody>
@@ -280,9 +383,330 @@
                 }
                 else
                 {
-                    <p class="text-muted mb-0">No expenses recorded this month.</p>
+                    <div class="text-center py-4">
+                        <i class="bi bi-inbox text-muted" style="font-size: 2rem;"></i>
+                        <p class="text-muted mb-0 mt-2">No expenses recorded this month.</p>
+                    </div>
                 }
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        // Get current theme
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const textColor = currentTheme === 'dark' ? '#f1f5f9' : '#64748b';
+        const gridColor = currentTheme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+        
+        // Beautiful color palette for charts
+        const chartColors = [
+            '#3b82f6', // Blue
+            '#10b981', // Green
+            '#f59e0b', // Amber
+            '#ef4444', // Red
+            '#8b5cf6', // Purple
+            '#ec4899', // Pink
+            '#06b6d4', // Cyan
+            '#84cc16', // Lime
+            '#f97316', // Orange
+            '#6366f1'  // Indigo
+        ];
+        
+        // Load Google Charts for Sankey
+        google.charts.load('current', {'packages':['sankey']});
+        google.charts.setOnLoadCallback(loadSankeyChart);
+        
+        // ========================================
+        // Animated Donut Chart - Spending by Category
+        // ========================================
+        fetch('@Url.Action("GetSpendingByCategory", new { year = Model.Year, month = Model.Month })')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('categoryDonutChart').getContext('2d');
+                
+                if (!data.labels || data.labels.length === 0) {
+                    document.getElementById('categoryDonutChart').parentElement.innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="bi bi-pie-chart text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mt-2">No spending data available</p>
+                        </div>`;
+                    return;
+                }
+                
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            data: data.datasets[0].data,
+                            backgroundColor: chartColors.slice(0, data.labels.length),
+                            borderWidth: 0,
+                            hoverOffset: 10,
+                            hoverBorderWidth: 2,
+                            hoverBorderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '65%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 15,
+                                    color: textColor,
+                                    font: { size: 12 }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: currentTheme === 'dark' ? '#1e293b' : '#ffffff',
+                                titleColor: currentTheme === 'dark' ? '#f1f5f9' : '#1e293b',
+                                bodyColor: currentTheme === 'dark' ? '#cbd5e1' : '#64748b',
+                                borderColor: currentTheme === 'dark' ? '#334155' : '#e2e8f0',
+                                borderWidth: 1,
+                                padding: 12,
+                                boxPadding: 6,
+                                callbacks: {
+                                    label: function(context) {
+                                        const value = context.raw;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return `$${value.toLocaleString('en-US', {minimumFractionDigits: 2})} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            animateRotate: true,
+                            animateScale: true,
+                            duration: 1500,
+                            easing: 'easeOutQuart'
+                        }
+                    }
+                });
+            })
+            .catch(err => {
+                console.error('Error loading category chart:', err);
+                document.getElementById('categoryDonutChart').parentElement.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="bi bi-pie-chart text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-2">No spending data available</p>
+                    </div>`;
+            });
+        
+        // ========================================
+        // Daily Spending Trend Chart
+        // ========================================
+        fetch('@Url.Action("GetDailySpendingTrend", new { year = Model.Year, month = Model.Month })')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('dailySpendingChart').getContext('2d');
+                
+                // Create gradient for bars
+                const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                gradient.addColorStop(0, 'rgba(59, 130, 246, 0.8)');
+                gradient.addColorStop(1, 'rgba(59, 130, 246, 0.2)');
+                
+                // Update bar dataset with gradient
+                if (data.datasets && data.datasets[0]) {
+                    data.datasets[0].backgroundColor = gradient;
+                    data.datasets[0].borderColor = '#3b82f6';
+                    data.datasets[0].borderWidth = 2;
+                    data.datasets[0].borderRadius = 6;
+                }
+                
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 15,
+                                    color: textColor
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: currentTheme === 'dark' ? '#1e293b' : '#ffffff',
+                                titleColor: currentTheme === 'dark' ? '#f1f5f9' : '#1e293b',
+                                bodyColor: currentTheme === 'dark' ? '#cbd5e1' : '#64748b',
+                                borderColor: currentTheme === 'dark' ? '#334155' : '#e2e8f0',
+                                borderWidth: 1,
+                                padding: 12,
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': $' + context.raw.toLocaleString('en-US', {minimumFractionDigits: 2});
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: gridColor },
+                                ticks: {
+                                    color: textColor,
+                                    callback: function(value) {
+                                        return '$' + value.toLocaleString();
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: textColor }
+                            }
+                        },
+                        animation: {
+                            duration: 1500,
+                            easing: 'easeOutQuart'
+                        }
+                    }
+                });
+            })
+            .catch(err => console.error('Error loading daily spending chart:', err));
+        
+        // ========================================
+        // Spending Calendar Heatmap
+        // ========================================
+        fetch('@Url.Action("GetSpendingCalendar", new { year = Model.Year, month = Model.Month })')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('spendingCalendar');
+                const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                
+                // Add day headers
+                dayNames.forEach(name => {
+                    const header = document.createElement('div');
+                    header.className = 'day-header';
+                    header.textContent = name;
+                    container.appendChild(header);
+                });
+                
+                // Add empty cells for days before the first of month
+                for (let i = 0; i < data.firstDayOfWeek; i++) {
+                    const empty = document.createElement('div');
+                    empty.className = 'calendar-day empty-day';
+                    container.appendChild(empty);
+                }
+                
+                // Add day cells
+                data.days.forEach((day, index) => {
+                    const cell = document.createElement('div');
+                    cell.className = `calendar-day intensity-${day.intensity}`;
+                    cell.title = `${day.date}: $${day.spent.toFixed(2)} (${day.count} transactions)`;
+                    cell.style.animationDelay = `${index * 30}ms`;
+                    cell.innerHTML = `
+                        <span class="day-number">${day.day}</span>
+                        ${day.spent > 0 ? `<span class="day-amount">$${day.spent >= 1000 ? (day.spent/1000).toFixed(1) + 'k' : day.spent.toFixed(0)}</span>` : ''}
+                    `;
+                    container.appendChild(cell);
+                });
+            })
+            .catch(err => console.error('Error loading spending calendar:', err));
+        
+        // ========================================
+        // Google Charts - Sankey Diagram
+        // ========================================
+        function loadSankeyChart() {
+            fetch('@Url.Action("GetCashFlowSankey", new { year = Model.Year, month = Model.Month })')
+                .then(response => response.json())
+                .then(sankeyData => {
+                    if (!sankeyData.links || sankeyData.links.length === 0) {
+                        document.getElementById('sankeyChart').innerHTML = `
+                            <div class="text-center py-5">
+                                <i class="bi bi-diagram-3 text-muted" style="font-size: 3rem;"></i>
+                                <p class="text-muted mt-2">No cash flow data available</p>
+                            </div>`;
+                        return;
+                    }
+                    
+                    const data = new google.visualization.DataTable();
+                    data.addColumn('string', 'From');
+                    data.addColumn('string', 'To');
+                    data.addColumn('number', 'Amount');
+                    
+                    // Build rows from links
+                    const rows = sankeyData.links.map(link => {
+                        const sourceNode = sankeyData.nodes.find(n => n.id === link.source);
+                        const targetNode = sankeyData.nodes.find(n => n.id === link.target);
+                        return [sourceNode?.label || link.source, targetNode?.label || link.target, link.value];
+                    });
+                    data.addRows(rows);
+                    
+                    const chartContainer = document.getElementById('sankeyChart');
+                    
+                    // Use fixed dimensions for reliable rendering
+                    const chartWidth = 500;
+                    const chartHeight = 320;
+                    
+                    const options = {
+                        width: chartWidth,
+                        height: chartHeight,
+                        sankey: {
+                            node: {
+                                colors: chartColors,
+                                label: { 
+                                    fontSize: 11, 
+                                    color: currentTheme === 'dark' ? '#f1f5f9' : '#1e293b',
+                                    bold: true
+                                },
+                                nodePadding: 15,
+                                width: 12,
+                                interactivity: true
+                            },
+                            link: {
+                                colorMode: 'gradient',
+                                colors: chartColors
+                            },
+                            iterations: 32
+                        },
+                        tooltip: {
+                            isHtml: true,
+                            textStyle: {
+                                color: currentTheme === 'dark' ? '#f1f5f9' : '#1e293b',
+                                fontSize: 12
+                            }
+                        }
+                    };
+                    
+                    // Clear container and draw chart
+                    chartContainer.innerHTML = '';
+                    const chart = new google.visualization.Sankey(chartContainer);
+                    chart.draw(data, options);
+                })
+                .catch(err => {
+                    console.error('Error loading sankey chart:', err);
+                    document.getElementById('sankeyChart').innerHTML = `
+                        <div class="text-center py-5">
+                            <i class="bi bi-diagram-3 text-muted" style="font-size: 3rem;"></i>
+                            <p class="text-muted mt-2">No cash flow data available</p>
+                        </div>`;
+                });
+        }
+        
+        // ========================================
+        // Initialize Progress Bar Animations
+        // ========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate progress bars after a short delay
+            setTimeout(() => {
+                document.querySelectorAll('.progress-bar[data-width]').forEach(bar => {
+                    bar.style.width = bar.getAttribute('data-width');
+                });
+            }, 300);
+        });
+    </script>
+}

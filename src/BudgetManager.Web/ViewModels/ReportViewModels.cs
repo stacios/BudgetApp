@@ -72,3 +72,62 @@ public class ChartDataset
     public string BackgroundColor { get; set; } = string.Empty;
     public string BorderColor { get; set; } = string.Empty;
 }
+
+// Sankey Chart Data Models
+public class SankeyChartData
+{
+    public List<SankeyNode> Nodes { get; set; } = new();
+    public List<SankeyLink> Links { get; set; } = new();
+}
+
+public class SankeyNode
+{
+    public string Id { get; set; } = string.Empty;
+    public string Label { get; set; } = string.Empty;
+    public string Color { get; set; } = string.Empty;
+}
+
+public class SankeyLink
+{
+    public string Source { get; set; } = string.Empty;
+    public string Target { get; set; } = string.Empty;
+    public decimal Value { get; set; }
+    public string Color { get; set; } = string.Empty;
+}
+
+// Daily Spending Trend Data
+public class DailySpendingDataPoint
+{
+    public DateTime Date { get; set; }
+    public string DateLabel { get; set; } = string.Empty;
+    public decimal Amount { get; set; }
+    public Dictionary<string, decimal> CategoryBreakdown { get; set; } = new();
+}
+
+public class DailySpendingTrendData
+{
+    public List<string> Labels { get; set; } = new();
+    public List<decimal> DailyTotals { get; set; } = new();
+    public decimal DailyTarget { get; set; }
+    public decimal AverageSpending { get; set; }
+    public List<string> Categories { get; set; } = new();
+    public Dictionary<string, List<decimal>> CategoryData { get; set; } = new();
+}
+
+// Spending Calendar Data
+public class SpendingCalendarData
+{
+    public int Year { get; set; }
+    public int Month { get; set; }
+    public List<CalendarDayData> Days { get; set; } = new();
+    public decimal MaxDailySpend { get; set; }
+}
+
+public class CalendarDayData
+{
+    public int Day { get; set; }
+    public DateTime Date { get; set; }
+    public decimal TotalSpent { get; set; }
+    public int TransactionCount { get; set; }
+    public string IntensityClass { get; set; } = string.Empty;
+}
